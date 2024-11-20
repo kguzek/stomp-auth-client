@@ -1,17 +1,17 @@
 /**
  * STOMP Auth Client - A simple STOMP client for Java with authentication support
  * Copyright © 2024 by Konrad Guzek <konrad@guzek.uk>
- * 
+
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -89,8 +89,8 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a customisable generic STOMP frame.
-     * https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md
-     * 
+     * <a href="https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md">STOMP specifications</a>
+     *
      * @param command the frame command
      * @param headers a map of header key-value pairs
      */
@@ -100,8 +100,8 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a customisable generic STOMP frame.
-     * https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md
-     * 
+     * <a href="https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md">STOMP specifications</a>
+     *
      * @param command the frame command
      * @param headers a map of header key-value pairs
      * @param body    optional payload string
@@ -114,7 +114,7 @@ public abstract class StompClient extends WebSocketClient {
         String message = messageBuilder.append("\n").append(body).append("\0").toString();
 
         Runnable runnable = () -> {
-            logger.trace(">>>" + message);
+            logger.trace(">>>{}", message);
             this.send(message);
         };
 
@@ -194,7 +194,7 @@ public abstract class StompClient extends WebSocketClient {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.warn("Thread sleep interrupted in loop", e);
                 break;
             }
             if (loopCount > timeout) {
@@ -249,7 +249,7 @@ public abstract class StompClient extends WebSocketClient {
      */
     @Override
     public void onMessage(String message) {
-        logger.trace("<<<" + message);
+        logger.trace("<<<{}", message);
         String[] parts = message.split("\n\n", 2);
         String[] headersArray = parts[0].split("\n");
         String frame = headersArray[0];
@@ -265,7 +265,7 @@ public abstract class StompClient extends WebSocketClient {
                 String receivedReceiptString = headers.get("receipt-id");
                 int receivedReceipt = Integer.parseInt(receivedReceiptString);
                 if (!receiptHandlers.containsKey(receivedReceipt)) {
-                    logger.warn("Received receipt " + receivedReceiptString + " but there was no handler");
+                    logger.warn("Received receipt {} but there was no handler", receivedReceiptString);
                     break;
                 }
                 receiptHandlers.get(receivedReceipt).run();
@@ -274,7 +274,7 @@ public abstract class StompClient extends WebSocketClient {
                 String destination = headers.get("destination");
                 SubscriptionHandler handler = subscriptionHandlers.get(destination);
                 if (handler == null) {
-                    logger.error("Subscription handler for " + destination + " is null: " + subscriptionHandlers);
+                    logger.error("Subscription handler for {} is null: {}", destination, subscriptionHandlers);
                     break;
                 }
                 handler.accept(headers, body);
