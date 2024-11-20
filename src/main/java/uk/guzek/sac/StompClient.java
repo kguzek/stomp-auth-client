@@ -1,3 +1,21 @@
+/**
+ * STOMP Auth Client - A simple STOMP client for Java with authentication support
+ * Copyright © 2024 by Konrad Guzek <konrad@guzek.uk>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package uk.guzek.sac;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,8 +41,9 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Initialises the client.
+     * 
      * @param serverUri the uri of the server
-     * @param host the host to use to send the CONNECT STOMP frame
+     * @param host      the host to use to send the CONNECT STOMP frame
      */
     public StompClient(URI serverUri, String host) {
         this(serverUri, Map.of(), host);
@@ -32,9 +51,11 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Initialises the client.
+     * 
      * @param serverUri the URI of the STOMP server
-     * @param headers optional key-value header pairs to use during the initial HTTP Upgrade request
-     * @param host the host to use to send the CONNECT STOMP frame
+     * @param headers   optional key-value header pairs to use during the initial
+     *                  HTTP Upgrade request
+     * @param host      the host to use to send the CONNECT STOMP frame
      */
     public StompClient(URI serverUri, Map<String, String> headers, String host) {
         this(serverUri, headers, host, 10);
@@ -42,11 +63,14 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Initialises the client.
+     * 
      * @param serverUri the URI of the STOMP server
-     * @param headers optional key-value header pairs to use during the initial HTTP Upgrade request
-     * @param host the host to use to send the CONNECT STOMP frame
-     * @param timeout optional length of time to allow for lost messages to be sent when the client is closed, in
-     *                seconds; defaults to 10
+     * @param headers   optional key-value header pairs to use during the initial
+     *                  HTTP Upgrade request
+     * @param host      the host to use to send the CONNECT STOMP frame
+     * @param timeout   optional length of time to allow for lost messages to be
+     *                  sent when the client is closed, in
+     *                  seconds; defaults to 10
      */
     public StompClient(URI serverUri, Map<String, String> headers, String host, int timeout) {
         super(serverUri, headers);
@@ -55,7 +79,8 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     private void executeMessageQueue() {
-        if (!connected) return;
+        if (!connected)
+            return;
         for (Runnable runnable : messageQueue) {
             runnable.run();
         }
@@ -63,7 +88,9 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     /**
-     * Send a customisable generic STOMP frame. https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md
+     * Send a customisable generic STOMP frame.
+     * https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md
+     * 
      * @param command the frame command
      * @param headers a map of header key-value pairs
      */
@@ -72,10 +99,12 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     /**
-     * Send a customisable generic STOMP frame. https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md
+     * Send a customisable generic STOMP frame.
+     * https://github.com/stomp/stomp-spec/blob/master/src/stomp-specification-1.2.md
+     * 
      * @param command the frame command
      * @param headers a map of header key-value pairs
-     * @param body optional payload string
+     * @param body    optional payload string
      */
     public void sendStompFrame(String command, Map<String, Object> headers, String body) {
         StringBuilder messageBuilder = new StringBuilder(command.toUpperCase() + "\n");
@@ -107,7 +136,8 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a SEND frame which is not JSON or plaintext.
-     * @param message the payload to send
+     * 
+     * @param message     the payload to send
      * @param destination the path to send the message to
      * @param contentType the MIME content type of the payload
      */
@@ -117,7 +147,8 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a plaintext SEND frame.
-     * @param message the plaintext payload to send
+     * 
+     * @param message     the plaintext payload to send
      * @param destination the path to send the message to
      */
     public void sendText(String message, String destination) {
@@ -126,7 +157,8 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a JSON SEND frame.
-     * @param object the object payload to be serialised as JSON and sent
+     * 
+     * @param object      the object payload to be serialised as JSON and sent
      * @param destination the path to send the message to
      * @throws JsonProcessingException passed on from Jackson's `writeValueAsString`
      */
@@ -137,9 +169,12 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Calls `handler` whenever the server sends MESSAGE frames to `destination`.
+     * 
      * @param destination the path of the resource to subscribe to
-     * @param handler a function of signature `(Map<String, String>, String) -> void`
-     * @return the id of the subscription (incremental) */
+     * @param handler     a function of signature `(Map<String, String>, String) ->
+     *                    void`
+     * @return the id of the subscription (incremental)
+     */
     public int subscribe(String destination, SubscriptionHandler handler) {
         sendStompFrame("SUBSCRIBE", Map.of("destination", destination, "id", subscriptionId));
         subscriptionHandlers.put(destination, handler);
@@ -147,7 +182,8 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     /**
-     * Waits for all outgoing messages to be sent, sends a DISCONNECT frame, waits for the server to acknowledge the
+     * Waits for all outgoing messages to be sent, sends a DISCONNECT frame, waits
+     * for the server to acknowledge the
      * DISCONNECT frame and finally closes the websocket connection.
      * If the outgoing messages are not sent within 10 seconds, they are skipped.
      */
@@ -171,8 +207,10 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     /**
-     * Called when the websocket connection is first established. The STOMP service isn't ready yet.
-     * If you need functionality as soon as the connection is usable, use {@link #onConnected} instead.
+     * Called when the websocket connection is first established. The STOMP service
+     * isn't ready yet.
+     * If you need functionality as soon as the connection is usable, use
+     * {@link #onConnected} instead.
      * Do not override unless you know what you are doing.
      */
     @Override
@@ -181,8 +219,10 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     /**
-     * Called when the STOMP connection is established. Can be overridden, as long as `super.onConnected` is called.
-     * You do not need to use this to send the first messages; they will be delayed internally as needed.
+     * Called when the STOMP connection is established. Can be overridden, as long
+     * as `super.onConnected` is called.
+     * You do not need to use this to send the first messages; they will be delayed
+     * internally as needed.
      */
     public void onConnected() {
         connected = true;
@@ -191,16 +231,20 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Called for each frame received by the client.
-     * Use this to handle other frames sent by the server which are not MESSAGE frames sent to subscriptions.
-     * @param frame the frame type
+     * Use this to handle other frames sent by the server which are not MESSAGE
+     * frames sent to subscriptions.
+     * 
+     * @param frame   the frame type
      * @param headers a key-value pair of frame headers
-     * @param body the frame body (can be an empty string, not null)
+     * @param body    the frame body (can be an empty string, not null)
      */
     public abstract void onStompFrame(String frame, Map<String, String> headers, String body);
 
     /**
-     * Called for each message received by the client. For STOMP messages, use {@link #onStompFrame}.
+     * Called for each message received by the client. For STOMP messages, use
+     * {@link #onStompFrame}.
      * Do not override this method unless you know what you are doing.
+     * 
      * @param message the raw message sent by the server
      */
     @Override
