@@ -13,10 +13,21 @@ This approach isn't needed when integrating websockets into a Spring-based clien
 
 ## Getting Started
 
-### Installation
+### Installation (Maven)
 
-[WIP] 
-To be made available on the Maven Central Repository.
+This project is available on the central [Maven Sonatype repository](https://central.sonatype.com/artifact/uk.guzek/stomp-auth-client).
+To use it in your code, paste the following into your `pom.xml`.
+
+```xml
+<dependency>
+    <groupId>uk.guzek</groupId>
+    <artifactId>stomp-auth-client</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+At the time of writing, the latest version is `1.0.0`. You can always check this here:
+
+https://central.sonatype.com/artifact/uk.guzek/stomp-auth-client/versions
 
 ### Logging
 
@@ -26,12 +37,18 @@ https://github.com/TooTallNate/Java-WebSocket#logging
 
 ## Usage
 
-{install/add to pom}
-
 The API is very similar to Java-Websocket's: you need to create your own implementation of the `StompClient` abstract class, then operate on an instance of that class.
 
-Assuming we have such a class called `ExampleClient`:
+To create such a class, simply extend the `StompClient` from this package.
+```java
+import uk.guzek.sac.StompClient;
 
+public class ExampleClient extends StompClient {
+  // ...
+}
+```
+
+Then, assuming such a class has implemented all the necessary abstract methods: 
 ```java
 ExampleClient client = new ExampleClient(URI.create(serverUri), AuthType.jwt(token), host);
 // remember to call `.connect()` after initialising the client
