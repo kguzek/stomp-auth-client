@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="stomp-auth-client:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/stomp_auth_client_jar</output-path>
+    <root id="archive" name="stomp-auth-client.jar">
+      <element id="module-output" name="stomp-auth-client" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/java-websocket/Java-WebSocket/1.5.7/Java-WebSocket-1.5.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/2.0.6/slf4j-api-2.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.18.1/jackson-core-2.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.18.1/jackson-annotations-2.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.18.1/jackson-databind-2.18.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
