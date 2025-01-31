@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.guzek.sac.AuthType;
 import uk.guzek.sac.StompClient;
+import uk.guzek.sac.auth.JwtAuth;
 
 import java.net.URI;
 import java.util.Map;
@@ -29,8 +30,8 @@ import java.util.Map;
 public class ExampleClient extends StompClient {
     Logger logger = LoggerFactory.getLogger(ExampleClient.class);
 
-    public ExampleClient(URI serverUri, Map<String, String> headers, String host) {
-        super(serverUri, headers, host);
+    public ExampleClient(URI serverUri, AuthType authType, String host) {
+        super(serverUri, authType, host);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class ExampleClient extends StompClient {
         String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrZ3V6ZWsiLCJpYXQiOjE3MzIwMjc1MjksImV4cCI6MTczMjA3MDcyOX0.1z_pqhLQA7USpGmBEyjBK6ImHBahGp4-yNn5ovg1Xow";
         // this isn't really necessary, except maybe with strict CORS on your server?
         String host = "test.example.com";
-        ExampleClient client = new ExampleClient(URI.create(serverUri), AuthType.jwt(token), host);
+        StompClient client = new ExampleClient(URI.create(serverUri), new JwtAuth(token), host);
         // remember to call `.connect()` after initialising the client
         client.connect();
         client.subscribe("/topic/greetings",

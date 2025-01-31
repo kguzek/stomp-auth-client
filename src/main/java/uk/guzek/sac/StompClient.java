@@ -1,17 +1,17 @@
 /**
  * STOMP Auth Client - A simple STOMP client for Java with authentication support
  * Copyright © 2024 by Konrad Guzek <konrad@guzek.uk>
-
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
-
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -41,7 +41,7 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Initialises the client.
-     * 
+     *
      * @param serverUri the uri of the server
      * @param host      the host to use to send the CONNECT STOMP frame
      */
@@ -51,7 +51,7 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Initialises the client.
-     * 
+     *
      * @param serverUri the URI of the STOMP server
      * @param headers   optional key-value header pairs to use during the initial
      *                  HTTP Upgrade request
@@ -63,7 +63,34 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Initialises the client.
-     * 
+     *
+     * @param serverUri the URI of the STOMP server
+     * @param authType  optional authentication method from `uk.guzek.sac.auth.*` to use during the initial
+     *                  HTTP Upgrade request
+     * @param host      the host to use to send the CONNECT STOMP frame
+     */
+    public StompClient(URI serverUri, AuthType authType, String host) {
+        this(serverUri, authType, host, 10);
+    }
+
+    /**
+     * Initialises the client.
+     *
+     * @param serverUri the URI of the STOMP server
+     * @param authType  optional authentication method from `uk.guzek.sac.auth.*` to use during the initial
+     *                  HTTP Upgrade request
+     * @param host      the host to use to send the CONNECT STOMP frame
+     * @param timeout   optional length of time to allow for lost messages to be
+     *                  sent when the client is closed, in
+     *                  seconds; defaults to 10
+     */
+    public StompClient(URI serverUri, AuthType authType, String host, int timeout) {
+        this(serverUri, authType.getHeaders(), host, timeout);
+    }
+
+    /**
+     * Initialises the client.
+     *
      * @param serverUri the URI of the STOMP server
      * @param headers   optional key-value header pairs to use during the initial
      *                  HTTP Upgrade request
@@ -79,8 +106,7 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     private void executeMessageQueue() {
-        if (!connected)
-            return;
+        if (!connected) return;
         for (Runnable runnable : messageQueue) {
             runnable.run();
         }
@@ -136,7 +162,7 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a SEND frame which is not JSON or plaintext.
-     * 
+     *
      * @param message     the payload to send
      * @param destination the path to send the message to
      * @param contentType the MIME content type of the payload
@@ -147,7 +173,7 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a plaintext SEND frame.
-     * 
+     *
      * @param message     the plaintext payload to send
      * @param destination the path to send the message to
      */
@@ -157,7 +183,7 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Send a JSON SEND frame.
-     * 
+     *
      * @param object      the object payload to be serialised as JSON and sent
      * @param destination the path to send the message to
      * @throws JsonProcessingException passed on from Jackson's `writeValueAsString`
@@ -169,7 +195,7 @@ public abstract class StompClient extends WebSocketClient {
 
     /**
      * Calls `handler` whenever the server sends MESSAGE frames to `destination`.
-     * 
+     *
      * @param destination the path of the resource to subscribe to
      * @param handler     a biconsumable which takes a string-string header map and a body string`
      * @return the id of the subscription (incremental)
@@ -232,7 +258,7 @@ public abstract class StompClient extends WebSocketClient {
      * Called for each frame received by the client.
      * Use this to handle other frames sent by the server which are not MESSAGE
      * frames sent to subscriptions.
-     * 
+     *
      * @param frame   the frame type
      * @param headers a key-value pair of frame headers
      * @param body    the frame body (can be an empty string, not null)
@@ -243,7 +269,7 @@ public abstract class StompClient extends WebSocketClient {
      * Called for each message received by the client. For STOMP messages, use
      * {@link #onStompFrame}.
      * Do not override this method unless you know what you are doing.
-     * 
+     *
      * @param message the raw message sent by the server
      */
     @Override
