@@ -63,7 +63,7 @@ public class ExampleClient extends StompClient {
         StompClient client = new ExampleClient(URI.create(serverUri), new JwtAuth(token), host);
         // remember to call `.connect()` after initialising the client
         client.connect();
-        client.subscribe("/topic/greetings",
+        int subscriptionId = client.subscribe("/topic/greetings",
                 (Map<String, String> headers, String body) -> logger.debug("Greeted: '{}'", body));
         client.sendText("test message", "/app/test");
         // sleep to allow replies to propagate, your application will probably be doing
@@ -74,6 +74,7 @@ public class ExampleClient extends StompClient {
             logger.warn("Thread sleep interrupted", e);
         }
         // soft close, doesn't need additional checks
+        client.unsubscribe("/topic/greetings", subscriptionId);
         client.close();
     }
 }

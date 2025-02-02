@@ -207,6 +207,16 @@ public abstract class StompClient extends WebSocketClient {
     }
 
     /**
+     * Removes the subscription with the given id from the given destination.
+     * @param destination the path of the resource that was subscribed to
+     * @param subscriptionId the integer returned from the corresponding call to {@link #subscribe}
+     */
+    public void unsubscribe(String destination, int subscriptionId) {
+        sendStompFrame("UNSUBSCRIBE", Map.of("id", subscriptionId));
+        subscriptionHandlers.remove(destination);
+    }
+
+    /**
      * Waits for all outgoing messages to be sent, sends a DISCONNECT frame, waits
      * for the server to acknowledge the
      * DISCONNECT frame and finally closes the websocket connection.
