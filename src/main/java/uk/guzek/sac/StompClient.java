@@ -197,7 +197,7 @@ public abstract class StompClient extends WebSocketClient {
      * Calls `handler` whenever the server sends MESSAGE frames to `destination`.
      *
      * @param destination the path of the resource to subscribe to
-     * @param handler     a biconsumable which takes a string-string header map and a body string`
+     * @param handler     a bi-consumable which takes a string-string header map and a body string`
      * @return the id of the subscription (incremental)
      */
     public int subscribe(String destination, SubscriptionHandler handler) {
