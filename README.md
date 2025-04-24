@@ -22,10 +22,10 @@ To use it in your code, paste the following into your `pom.xml`.
 <dependency>
     <groupId>uk.guzek</groupId>
     <artifactId>stomp-auth-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
-At the time of writing, the latest version is `1.0.0`. You can always check this here:
+At the time of writing, the latest version is `1.1.1`. You can always check this here:
 
 https://central.sonatype.com/artifact/uk.guzek/stomp-auth-client/versions
 
